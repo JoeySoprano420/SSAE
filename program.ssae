@@ -1,0 +1,7 @@
+// Countdown demo
+Load R1 Fastest #5
+Loop Deepest CountDown:
+  Echo Char Loudest '*'
+  Nudge R1 Softest -1
+  Jump CountDown Hardest IfAbove R1 #0
+Echo Char Loudest '\n'
