@@ -128,3 +128,20 @@ ssae mycode.ssae --verbose --trace
 
  🎮 Game scripting mode (ssae -g with visual debug)
 
+---
+
+🧠 SSAE VM Interpreter:
+
+Command: ssae run mycode.ssae
+
+📁 File Layout:
+
+ssae_vm/
+├── ssae_vm.py              # Main VM + CLI
+├── parser.py               # Parses SSAE into opcodes
+├── instructions.py         # Instruction execution logic
+├── memory.py               # Register & stack/memory model
+├── program.ssae            # Your source file
+
+---
+
