@@ -277,6 +277,50 @@ def provide_autocompletions(prefix):
     pool = ssae_keywords + ssae_registers + ssae_qualifiers + ssae_conditions
     return [word for word in pool if word.lower().startswith(prefix.lower())]
 
+# ---------------------- CapsuleNet: Peer Execution Module ----------------------
+import socket
+import threading
+
+CAPSULENET_PORT = 60606
+CAPSULENET_HEADER = b"[CAPSULENET_PACKET]"
+
+# Peer Capsule Registry
+capsule_registry = {}
+
+def start_capsulenet_server(vm_callback):
+    def handler(conn, addr):
+        data = conn.recv(65536)
+        if data.startswith(CAPSULENET_HEADER):
+            capsule_data = data[len(CAPSULENET_HEADER):].decode()
+            capsule_id = f"{addr[0]}:{addr[1]}"
+            capsule_registry[capsule_id] = capsule_data
+            print(f"[🛰️ Capsule received from {capsule_id}]")
+            vm_callback(capsule_data, capsule_id)
+        conn.close()
+
+    def server():
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(('', CAPSULENET_PORT))
+        s.listen(5)
+        print(f"[🌐 CapsuleNet Listening on port {CAPSULENET_PORT}]")
+        while True:
+            conn, addr = s.accept()
+            threading.Thread(target=handler, args=(conn, addr)).start()
+
+    threading.Thread(target=server, daemon=True).start()
+
+def send_capsule_to_peer(peer_ip, capsule_text):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.connect((peer_ip, CAPSULENET_PORT))
+        s.sendall(CAPSULENET_HEADER + capsule_text.encode())
+        print(f"[📡 Capsule sent to {peer_ip}]")
+    except Exception as e:
+        print(f"[❌ CapsuleNet Error]: {e}")
+    finally:
+        s.close()
+
+
 
 # ---------------------- VSIX Hook Stub ----------------------
 # This section is reserved for a future VSCode extension integration
