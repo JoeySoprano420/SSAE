@@ -258,6 +258,26 @@ def main():
 if __name__ == "__main__":
     main()
 
+# ---------------------- Autocompletion Engine ----------------------
+
+ssae_keywords = [
+    "Load", "Push", "Pull", "Store", "Clear", "Test", "Calc", "Echo", "Jump", "Nudge",
+    "Loop", "Blink", "Zap"
+]
+
+ssae_registers = [f"R{i}" for i in range(16)]
+ssae_qualifiers = [
+    "Fastest", "Tightest", "Hardest", "Loudest", "Softest", "Brightest", "Deepest", "Cleanest"
+]
+ssae_conditions = [
+    "IfEqual", "IfNotEqual", "IfAbove", "IfBelow", "IfZero", "IfNonZero", "IfCarry"
+]
+
+def provide_autocompletions(prefix):
+    pool = ssae_keywords + ssae_registers + ssae_qualifiers + ssae_conditions
+    return [word for word in pool if word.lower().startswith(prefix.lower())]
+
+
 # ---------------------- VSIX Hook Stub ----------------------
 # This section is reserved for a future VSCode extension integration
 # It will include syntax, hover, and metadata doc via LSP (language server protocol)
