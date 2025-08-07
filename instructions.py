@@ -56,3 +56,61 @@ def execute_program(program):
                 continue
 
         ip += 1
+        return mem  # Return memory state after execution for inspection
+    def execute_instruction(instruction, mem):
+        verb = instruction["verb"].lower()
+        target = instruction["target"]
+        qualifier = instruction["qualifier"].lower()
+        operands = instruction["operands"]
+        if verb == "load":
+            reg = mem.reg(target)
+            val = mem.resolve(operands[0])
+            mem.set(reg, val)
+        elif verb == "store":
+            val = mem.resolve(target)
+            mem.store(operands[0][1:], val)
+        elif verb == "push":
+            val = mem.resolve(target)
+            mem.stack.append(val)
+        elif verb == "pull":
+            if mem.stack:
+                mem.set(mem.reg(target), mem.stack.pop())
+        elif verb == "clear":
+            mem.set(mem.reg(target), 0)
+        elif verb == "test":
+            val1 = mem.resolve(target)
+            val2 = mem.resolve(operands[0])
+            return val1 == val2
+        elif verb == "calc":
+            reg = mem.reg(target)
+            op = operands[0]
+            rhs = mem.resolve(operands[1])
+            if op == '+': mem.set(reg, mem.get(reg) + rhs)
+            elif op == '-': mem.set(reg, mem.get(reg) - rhs)
+        elif verb == "nudge":
+            reg = mem.reg(target)
+            delta = int(operands[0])
+            mem.set(reg, mem.get(reg) + delta)
+        elif verb == "echo":
+            ch = mem.resolve(operands[0])
+            print(str(ch), end='', flush=True)
+        return None
+    def execute_program(program):
+        mem = Memory()
+        ip = 0
+        labels = {line["target"].strip(":"): i for i, line in enumerate(program) if ":" in line["target"]}
+        while ip < len(program):
+            line = program[ip]
+            verb = line["verb"].lower()
+            target = line["target"]
+            qualifier = line["qualifier"].lower()
+            operands = line["operands"]
+            if ":" in target:
+                ip += 1
+                continue
+            if verb == "load":
+                reg = mem.reg(target)
+                val = mem.resolve(operands[0])
+                mem.set(reg, val)
+mem.set(mem.reg(target), 0)
+
