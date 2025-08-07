@@ -31,18 +31,28 @@ class TermColor:
         "bg_white": "\033[47m"
     }
 
+    SUPERLATIVE_STYLES = {
+        "brightest": ["bold", "underline"],
+        "loudest": ["bold", "blink"],
+        "softest": ["dim"],
+        "cleanest": ["bold"],
+        "deepest": ["reverse"],
+    }
+
     @staticmethod
     def print(text, color="reset", style=None, bg=None, end="\n"):
+        style_sequence = ""
+        if style in TermColor.SUPERLATIVE_STYLES:
+            for s in TermColor.SUPERLATIVE_STYLES[style]:
+                style_sequence += TermColor.COLORS.get(s, "")
+        else:
+            style_sequence = TermColor.COLORS.get(style.lower(), "") if style else ""
         fg_code = TermColor.COLORS.get(color.lower(), "")
         bg_code = TermColor.BG_COLORS.get(bg.lower(), "") if bg else ""
-        style_code = TermColor.COLORS.get(style.lower(), "") if style else ""
-        print(f"{style_code}{fg_code}{bg_code}{text}{TermColor.COLORS['reset']}", end=end)
+        print(f"{style_sequence}{fg_code}{bg_code}{text}{TermColor.COLORS['reset']}", end=end)
 
     @staticmethod
     def cprint(text, color="reset", style=None, bg=None, end="\n"):
-        """
-        Alias for TermColor.print for compatibility with traditional cprint usage.
-        """
         TermColor.print(text, color=color, style=style, bg=bg, end=end)
 
     @staticmethod
@@ -57,7 +67,12 @@ class TermColor:
     def block(text, fg_rgb=(255,255,255), bg_rgb=(0,0,0), style=None, pad=1):
         fg = TermColor.rgb(*fg_rgb)
         bg = TermColor.bg_rgb(*bg_rgb)
-        style_code = TermColor.COLORS.get(style, "") if style else ""
+        style_code = ""
+        if style in TermColor.SUPERLATIVE_STYLES:
+            for s in TermColor.SUPERLATIVE_STYLES[style]:
+                style_code += TermColor.COLORS.get(s, "")
+        else:
+            style_code = TermColor.COLORS.get(style, "") if style else ""
         padding = " " * pad
         print(f"{bg}{fg}{style_code}{padding}{text}{padding}{TermColor.COLORS['reset']}")
 
@@ -69,6 +84,19 @@ class TermColor:
         TermColor.print(edge, color=fg, bg=bg)
 
     @staticmethod
+    def highlight_capsule_state(state):
+        if state.lower() == "volatile":
+            TermColor.block("⚠️ Volatile Capsule", fg_rgb=(255, 255, 0), bg_rgb=(80, 0, 0), style="brightest")
+        elif state.lower() == "stable":
+            TermColor.block("✅ Stable Capsule", fg_rgb=(0, 255, 0), bg_rgb=(0, 40, 0), style="bold")
+        elif state.lower() == "corrupt":
+            TermColor.block("🛑 Corrupt Capsule", fg_rgb=(255, 255, 255), bg_rgb=(200, 0, 0), style="reverse")
+
+    @staticmethod
+    def banner_phase(label):
+        TermColor.banner(f"🔍 {label} Phase")
+
+    @staticmethod
     def demo_all():
         for color in TermColor.COLORS:
             TermColor.print(f"{color:<10}", color=color)
@@ -76,10 +104,7 @@ class TermColor:
             TermColor.print(f"{bg:<10}", bg=bg)
         TermColor.block("RGB Demo", (255, 255, 0), (0, 0, 255))
         TermColor.banner("🎨 TermColor Full Demo")
-
-# Usage examples:
-# TermColor.print("Hello", color="magenta", style="underline", bg="bg_cyan")
-# TermColor.cprint("Notice!", color="yellow", style="bold", bg="bg_blue")
-# TermColor.block("⚙ CONFIG", fg_rgb=(255,255,255), bg_rgb=(255,0,0))
-# TermColor.banner("🚀 LAUNCHING")
-# TermColor.demo_all()
+        TermColor.highlight_capsule_state("volatile")
+        TermColor.highlight_capsule_state("stable")
+        TermColor.highlight_capsule_state("corrupt")
+        TermColor.banner_phase("Introspection")
