@@ -919,6 +919,43 @@ def run_self_tests():
 
 if __name__ == "__main__":
     main()
+elif mode == "ide":
+    print("[🔧 IDE Mode Activated: Streaming AOT Compilation]")
+    stream_compile_to_exe(filename, flags)
+
+import time
+
+def stream_compile_to_exe(filename, flags):
+    last_frame = ""
+    asm_out = filename.replace(".ssae", ".stream.asm")
+    bin_out = asm_out.replace(".asm", ".exe")
+    compiled_frames = []
+
+    while True:
+        try:
+            with open(filename, "r") as f:
+                source = f.read()
+            if source != last_frame:
+                last_frame = source
+                metadata = extract_metadata(source)
+                program = optimize_program(parse_ssae(source))
+                asm_code = translate_to_nasm(program)
+
+                compiled_frames.append(asm_code)
+                with open(asm_out, "w") as f:
+                    f.write("\n\n".join(compiled_frames))
+                print(f"[🧩 Frame compiled: {len(program)} instructions]")
+
+                if "--exe" in flags:
+                    os.system(f"nasm -f win64 {asm_out} -o temp.obj")
+                    os.system(f"clang temp.obj -o {bin_out}")
+                    os.remove("temp.obj")
+                    print(f"[🚀 Executable updated: {bin_out}]")
+
+            time.sleep(1)  # Polling interval
+        except KeyboardInterrupt:
+            print("[🛑 IDE Mode Terminated]")
+            break
 
 
 # ---------------------- VSIX Hook Stub ----------------------
