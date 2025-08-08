@@ -547,6 +547,38 @@ def execute_program(program: list, flags: list):
             reg = mem.reg(target)
             delta = int(operands[0])
             mem.set(reg, mem.get(reg) + delta)
+        elif verb == "zap":
+            # ZAP: zero out a register or RAM label
+            if target.startswith("R"):
+                mem.set(mem.reg(target), 0)
+            elif target.startswith("@"):
+                mem.store(target[1:], 0)
+            else:
+                raise ValueError(f"ZAP: Unknown target {target}")
+        elif verb == "zap":
+            # ZAP: zero out a register or RAM label
+            if target.startswith("R"):
+                mem.set(mem.reg(target), 0)
+            elif target.startswith("@"):
+                mem.store(target[1:], 0)
+            else:
+                raise ValueError(f"ZAP: Unknown target {target}")
+        elif verb == "zap":
+            # ZAP: zero out a register or RAM label
+            if target.startswith("R"):
+                mem.set(mem.reg(target), 0)
+            elif target.startswith("@"):
+                mem.store(target[1:], 0)
+            else:
+                raise ValueError(f"ZAP: Unknown target {target}")
+        elif verb == "zap":
+            # ZAP: zero out a register or RAM label
+            if target.startswith("R"):
+                mem.set(mem.reg(target), 0)
+            elif target.startswith("@"):
+                mem.store(target[1:], 0)
+            else:
+                raise ValueError(f"ZAP: Unknown target {target}")
         elif verb == "echo":
             ch = mem.resolve(operands[0])
             if qualifier == "brightest":
