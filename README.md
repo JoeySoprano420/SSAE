@@ -3,8 +3,30 @@
 TO USE:
 NAVIGATE TO THE FOLDER IT IS SAVED IN 
 
-Make sure your .ssae file (e.g., program.ssae) is in this folder. Then run:
-python ssae_vm_extended.py run program.ssae
+Then write SSAE code directly in the environment and press enter for direct/live execution.
+
+## ⚡ How SSAE Executes Code
+* Unlike traditional interpreters, SSAE runs in interactive execution mode. When you launch the VM, it does not     simply read and execute a .ssae file. Instead, it behaves like a symbolic REPL:
+
+* 🧠 You type SSAE instructions directly into the terminal.
+
+* 📜 The VM interprets and executes each line immediately.
+
+* 📂 File-based execution is not currently supported.
+
+* 🧪 Why This Matters
+SSAE is designed for:
+
+Capsule introspection
+
+Mutation tracking
+
+Live symbolic negotiation
+
+This makes it ideal for debugging, profiling, and creative scripting—but it also means users should treat it like a live coding environment.
+
+* 🛠️ Future Plans
+File-based execution (e.g., python ssae_vm_extended.py run program.ssae) may be supported in future versions. For now, SSAE is optimized for live symbolic interaction
 
 
 ## DISCLAIMER:
