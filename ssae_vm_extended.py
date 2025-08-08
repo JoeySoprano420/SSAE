@@ -4,7 +4,12 @@
 import sys
 import os
 import json
-from termcolor import cprint
+try:
+    from termcolor import cprint
+except ImportError:
+    def cprint(text, color=None, **kwargs):
+        print(text)
+
 
 # ---------------------- Capsule Metadata ----------------------
 def extract_metadata(source):
